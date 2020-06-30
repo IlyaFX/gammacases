@@ -1,0 +1,36 @@
+messages:
+  opening: '&c!!! &fКейс в данный момент открывается'
+  badkey: '&c!!! &fКлюч не от этого кейса!'
+  notkey: '&c!!! &fЭто кейс. Ключ вы можете приобрести в /donate'
+cases:
+  test:
+    blocks:
+      - 'world;45;100;45'
+    items:
+      iron:
+        type: IRON_INGOT
+        name: '&dIron'
+        chance: 30
+        commands:
+          - minecraft:me %player% got iron!
+          - permissions set group %player% iron
+      gold:
+        type: GOLD_INGOT
+        name: '&6Gold'
+        chance: 10
+        commands:
+          - minecraft:me %player% got gold!
+          - permissions set group %player% iron
+      dia:
+        type: DIAMOND
+        name: '&bDiamond'
+        chance: 5
+        commands:
+          - minecraft:me %player% got diamond!
+          - permissions set group %player% iron
+    keys:
+      normal:
+        type: GOLD_INGOT
+        name: 'Ключ'
+        lore:
+          - 'Ключ.'

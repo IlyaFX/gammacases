@@ -1,0 +1,8 @@
+name: GammaCases
+version: "1.0"
+main: ru.ilyafx.gammacases.GammaCases
+author: ilyafx
+depend:
+  - HolographicDisplays
+commands:
+  gammacases:
