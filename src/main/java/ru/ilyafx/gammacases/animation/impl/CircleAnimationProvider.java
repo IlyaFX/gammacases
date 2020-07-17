@@ -28,9 +28,9 @@ public class CircleAnimationProvider implements AnimationProvider {
     private static final double Z_OFFSET = 0;
 
     @Override
-    public CompletableFuture<Void> startAnimation(Plugin plugin, V3 location, Case caseObj, CaseItem droppedItem) {
+    public CompletableFuture<Void> startAnimation(Plugin plugin, V3 location, List<CaseItem> items, CaseItem droppedItem) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        new CaseWheel(plugin, future, location, caseObj, droppedItem);
+        new CaseWheel(plugin, future, location, items, droppedItem);
         return future;
     }
 
@@ -52,11 +52,11 @@ public class CircleAnimationProvider implements AnimationProvider {
 
         private final int task;
 
-        public CaseWheel(Plugin plugin, CompletableFuture<Void> future, V3 v3, Case caseObj, CaseItem droppedItem) {
+        public CaseWheel(Plugin plugin, CompletableFuture<Void> future, V3 v3, List<CaseItem> itemsProvided, CaseItem droppedItem) {
             this.plugin = plugin;
             this.future = future;
             this.block = v3.toLocation().getBlock();
-            this.items = new ArrayList<>(caseObj.getItems().values());
+            this.items = new ArrayList<>(itemsProvided);
             Collections.shuffle(items);
             this.selected = droppedItem;
             this.zPlane = block.getData() == 2 || block.getData() == 3;

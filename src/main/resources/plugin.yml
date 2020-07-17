@@ -2,6 +2,7 @@ name: GammaCases
 version: "1.0"
 main: ru.ilyafx.gammacases.GammaCases
 author: ilyafx
+api-version: 1.13
 depend:
   - HolographicDisplays
 commands:

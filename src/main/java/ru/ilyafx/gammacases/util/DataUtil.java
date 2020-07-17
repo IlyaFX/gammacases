@@ -1,10 +1,21 @@
 package ru.ilyafx.gammacases.util;
 
 import lombok.experimental.UtilityClass;
+import net.minecraft.server.v1_13_R2.NBTCompressedStreamTools;
+import net.minecraft.server.v1_13_R2.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Constructor;
+import java.util.Base64;
+import java.util.List;
 
 @UtilityClass
 public class DataUtil {
@@ -26,6 +37,10 @@ public class DataUtil {
         return loc;
     }
 
+    public String dataToString(MaterialData data) {
+        return data.getItemType().name() + ":" + data.getData();
+    }
+
     public MaterialData dataFromString(String s) {
         byte data = 0;
         String[] split = s.split(":");
@@ -40,6 +55,59 @@ public class DataUtil {
 
     private String round(double val, int n) {
         return String.format("%." + n + "f", val);
+    }
+
+    public ItemStack itemStack(Material type, int amount, String name) {
+        return itemStack(type, (short) 0, amount, name, null);
+    }
+
+    public ItemStack itemStack(Material type, short data, int amount, String name) {
+        return itemStack(type, data, amount, name, null);
+    }
+
+    public ItemStack itemStack(Material type, int amount, String name, List<String> lore) {
+        return itemStack(type, (byte) 0, amount, name, lore);
+    }
+
+    public ItemStack itemStack(Material type, short data, int amount, String name, List<String> lore) {
+        ItemStack item = new ItemStack(type, amount, data);
+        ItemMeta meta = item.getItemMeta();
+        if (name != null)
+            meta.setDisplayName(name);
+        if (lore != null)
+            meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public String serealizeItem(org.bukkit.inventory.ItemStack stack /* bukkit */) {
+        if (stack == null)
+            return "null";
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            NBTTagCompound compound = new NBTTagCompound();
+            CraftItemStack.asNMSCopy(stack).save(compound);
+            NBTCompressedStreamTools.a(compound, stream);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "null";
+        }
+        return Base64.getEncoder().encodeToString(stream.toByteArray());
+    }
+
+    public org.bukkit.inventory.ItemStack deserealizeItem(String string) {
+        if ("null".equals(string))
+            return null;
+        try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
+            NBTTagCompound compound = NBTCompressedStreamTools.a(stream);
+            Constructor<net.minecraft.server.v1_13_R2.ItemStack> constructor = net.minecraft.server.v1_13_R2.ItemStack.class.getDeclaredConstructor(NBTTagCompound.class);
+            constructor.setAccessible(true);
+            return CraftItemStack.asBukkitCopy(constructor.newInstance(compound));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

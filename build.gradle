@@ -24,6 +24,8 @@ jar {
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     compileOnly 'org.projectlombok:lombok:1.18.12'
+    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.20'
     compileOnly files("libs/spigot.jar")
     compileOnly files("libs/HolographicDisplays.jar")
 }
