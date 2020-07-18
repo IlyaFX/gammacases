@@ -25,11 +25,14 @@ public class Case {
         return itemsSupplier.containsKey(boxId);
     }
 
-    public void open(Player player, String boxId, Database.CaseData data) {
+    public void open(Player player, String boxId, Database.CaseData data, int limit) {
         AnimationProvider provider = Objects.requireNonNull(animationProvider.get(), "Bad animation for case " + id);
         List<CaseItem> items = Optional.ofNullable(itemsSupplier.get(boxId)).orElse(Collections::emptyList).get();
         if (items == null || items.isEmpty())
             throw new RuntimeException("Null items");
+        items = new ArrayList<>(items);
+        Collections.shuffle(items);
+        items = items.stream().limit(limit).collect(Collectors.toList());
         data.lock();
         CaseItem dropped = RandomUtil.weightedRandom(items.stream().collect(Collectors.toMap(item -> item, CaseItem::getChance)));
         provider.startAnimation(GammaCases.getInstance(), data.getV3(), items, dropped).thenAccept(v -> {

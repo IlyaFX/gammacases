@@ -53,6 +53,8 @@ public class GammaCases extends JavaPlugin implements Listener {
     private Map<String, String> messages = new HashMap<>();
     private final Map<String, AnimationProvider> animationProviderMap = new HashMap<>();
 
+    private int limit = 8;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -204,6 +206,7 @@ public class GammaCases extends JavaPlugin implements Listener {
     private void reload() {
         reloadConfig();
         this.messages = getConfig().getConfigurationSection("messages").getKeys(false).stream().collect(Collectors.toMap(id -> id, id -> ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages." + id))));
+        this.limit = getConfig().getInt("limit", 8);
     }
 
     private void openCaseGui(Player player, Database.CaseData caseObj, int page) {
@@ -243,7 +246,7 @@ public class GammaCases extends JavaPlugin implements Listener {
                             if (!caseData.isLocked()) {
                                 database.removeBox(box);
                                 playerData.get(box.getBoxId()).removeIf(boxObj -> boxObj.getId().equals(box.getId()));
-                                caseObj.open(player, box.getBoxId(), caseData);
+                                caseObj.open(player, box.getBoxId(), caseData, limit);
                                 player.closeInventory();
                             }
                         });
